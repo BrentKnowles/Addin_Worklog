@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9FF7431C-7CEC-4806-8242-7766EFB8DF5D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Worklog</RootNamespace>
+    <AssemblyName>Addin_Worklog</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\yom2013B\MEF_Interfaces\MEF_Interfaces.csproj">
+      <Project>{2E366A51-224A-4C3B-90D6-FE8C81C9EB78}</Project>
+      <Name>MEF_Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\yom2013B\coreutilities\coreutilities2013.csproj">
+      <Project>{6EAA0B60-70E3-49FB-88E9-272D2719CECF}</Project>
+      <Name>coreutilities2013</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\yom2013B\Layout\Layout.csproj">
+      <Project>{DA1AA77A-D94D-4F79-AC96-7BC9AF0AFB34}</Project>
+      <Name>Layout</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\yom2013B\EventTable\TransactionSystem.csproj">
+      <Project>{015AC0C9-2F05-45BE-AD21-5A475AACA2D7}</Project>
+      <Name>TransactionSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\yom2013B\database\database.csproj">
+      <Project>{C08FDDB5-5C59-4611-98E7-76674F290896}</Project>
+      <Name>database</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="mef_Addin_Worklog.cs" />
+    <Compile Include="NoteDataXML_Worklog.cs" />
+    <Compile Include="JournalPanel.cs" />
+    <Compile Include="dashboardDayTime.cs" />
+    <Compile Include="dashboardDayTime.Designer.cs" />
+    <Compile Include="ListOfTransactionsPanel.cs" />
+    <Compile Include="TotalProgressPanel.cs" />
+    <Compile Include="AddEditWorkForm.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\book.png">
+      <LogicalName>book.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\font_add.png">
+      <LogicalName>font_add.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\printer.png">
+      <LogicalName>printer.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\date_next.png">
+      <LogicalName>date_next.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\arrow_refresh.png">
+      <LogicalName>arrow_refresh.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\arrow_left.png">
+      <LogicalName>arrow_left.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\arrow_right.png">
+      <LogicalName>arrow_right.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\date.png">
+      <LogicalName>date.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
