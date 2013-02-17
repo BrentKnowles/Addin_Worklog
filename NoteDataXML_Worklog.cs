@@ -21,9 +21,9 @@ namespace Worklog
 			base.CommonConstructorBehavior ();
 			Caption = Loc.Instance.GetString("Worklog");
 		}
-		public override void CreateParent (Layout.LayoutPanelBase Layout)
+		protected override void DoBuildChildren (LayoutPanelBase Layout)
 		{
-			base.CreateParent (Layout);
+			base.DoBuildChildren (Layout);
 			properties.DropDownItems.Add (new ToolStripSeparator ());
 			CaptionLabel.Dock = DockStyle.Top;
 		
