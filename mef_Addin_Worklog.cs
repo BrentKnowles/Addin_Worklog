@@ -87,7 +87,7 @@ namespace MefAddIns
 			//NewMessage.Show ("Registering Picture");
 			//Layout.LayoutDetails.Instance.AddToList(typeof(NoteDataXML_Picture.NoteDataXML_Pictures), "Picture");
 		}
-		public void RespondToCallToAction<T>(T form) where T: System.Windows.Forms.Form, MEF_Interfaces.iAccess 
+		public void RespondToMenuOrHotkey<T>(T form) where T: System.Windows.Forms.Form, MEF_Interfaces.iAccess 
 		{
 			//NewMessage.Show ("Fact or Search! This would only appear if a menu item was hooked up");
 			// do nothing. This is not called for mef_Inotes
@@ -96,7 +96,7 @@ namespace MefAddIns
 	
 		
 		
-		public void ActionWithParam (object param)
+		public void ActionWithParamForNoteTextActions (object param)
 		{
 			
 
