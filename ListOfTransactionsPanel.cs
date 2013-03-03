@@ -34,7 +34,7 @@ namespace Worklog
 		/// - An Add button
 		/// - Ability to edit existing entries from the listbox
 		/// </summary>
-		public ListOfTransactionsPanel (string LayoutGUID, Action<string> _RefreshPanels, Func<DateTime> _CurrentDate)
+		public ListOfTransactionsPanel (string LayoutGUID, Action<string> _RefreshPanels, Func<DateTime> _CurrentDate,Func<bool> _BringFront)
 		{
 			_GUID = LayoutGUID;
 			CurrentDate = _CurrentDate;
@@ -50,6 +50,7 @@ namespace Worklog
 			Add.Click += HandleAddClick;
 
 			 Summary = new RichTextBox();
+			Summary.Click+= (object sender, EventArgs e) => _BringFront();
 			Summary.Height = 200;
 			Summary.Dock = DockStyle.Top;
 			Summary.ReadOnly = true;

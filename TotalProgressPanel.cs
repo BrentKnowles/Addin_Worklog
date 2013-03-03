@@ -14,9 +14,10 @@ namespace Worklog
 		//     Words This Week: 3100
 
 		/// </summary>
-		public TotalProgressPanel ()
+		public TotalProgressPanel (Func<bool> _BringFront)
 		{
 			 ProgressPanel = new RichTextBox();
+			ProgressPanel.Click+= (object sender, EventArgs e) => _BringFront();
 			ProgressPanel.Dock = DockStyle.Fill;
 			ProgressPanel.ReadOnly = true;
 			this.Controls.Add (ProgressPanel);

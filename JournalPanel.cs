@@ -16,15 +16,17 @@ namespace Worklog
 		#endregion
 		#region variables
 		string GUID = Constants.BLANK;
+		Func<bool> BringFront = null;
 		#endregion
-		public JournalPanel (string LayoutGUID)
+		public JournalPanel (string LayoutGUID, Func<bool> _BringFront)
 		{
+			BringFront = _BringFront;
 			if (Constants.BLANK == LayoutGUID) throw new Exception("A non-valid GUID was passed into the Journal Panel");
 			GUID = LayoutGUID;
 
 
 			Panel LeftSide = new Panel();
-
+			LeftSide.Click+= (object sender, EventArgs e) => BringFront();
 			Button YearsReport = new Button();
 			YearsReport.Text = Loc.Instance.GetString ("Report");
 			YearsReport.Click+= HandleYearsReportClick;
@@ -32,8 +34,8 @@ namespace Worklog
 			//this.Controls.Add (dayLog);
 			dayTime = new dashboardDayTime(RefreshPanels);
 
-			TransactionsPanel = new ListOfTransactionsPanel(LayoutGUID, RefreshPanels,CurrentDate);
-			 ProgressPanel = new TotalProgressPanel();
+			TransactionsPanel = new ListOfTransactionsPanel(LayoutGUID, RefreshPanels,CurrentDate, BringFront);
+			ProgressPanel = new TotalProgressPanel(BringFront);
 
 
 
