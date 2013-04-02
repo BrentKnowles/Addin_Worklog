@@ -70,7 +70,9 @@ namespace Worklog
 			
 			Label Words = new Label ();
 			Words.Text = Loc.Instance.GetString ("Words");
-			
+
+
+
 			WordsEdit = new TextBox ();
 			WordsEdit.Text = "0";
 			WordsEdit.TextChanged += HandleTextChanged;
@@ -82,7 +84,8 @@ namespace Worklog
 			MinutesEdit = new TextBox ();
 			MinutesEdit.Text = "0";
 			MinutesEdit.TextChanged += HandleTextChanged;
-			
+
+
 			Category = new ComboBox ();
 			List<string> allitems = LayoutDetails.Instance.TableLayout.GetListOfStringsFromSystemTable (LayoutDetails.SYSTEM_WORKLOGCATEGORY, 1);
 			//Category.DataSource = allitems;
@@ -93,7 +96,10 @@ namespace Worklog
 			
 			Notes = new RichTextBox();
 			Notes.Text= "";
-			
+
+
+
+
 			
 			Words.Dock = DockStyle.Top;
 			WordsEdit.Dock = DockStyle.Top;
@@ -115,6 +121,17 @@ namespace Worklog
 			
 			this.Controls.Add (WordsEdit);
 			this.Controls.Add (Words);
+
+
+			// Tabs
+			WordsEdit.TabIndex = 0;
+			//WordsEdit.TabStop = true;
+			MinutesEdit.TabIndex = 1;
+			Category.TabIndex = 2;
+			Notes.TabIndex = 3;
+			buttons.TabIndex = 4;
+			cancel.TabIndex = 5;
+			ok.TabIndex = 6;
 
 		}
 

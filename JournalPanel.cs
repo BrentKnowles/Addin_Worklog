@@ -78,13 +78,13 @@ namespace Worklog
 		                               , string sFontFamily)
 		{
 			richText.SelectAll();
-			richText.SelectionFont = new Font("Georgia", 12);
+			richText.SelectionFont = new Font("Courier New", 12);
 			
 			// select and format title
 			richText.SelectionStart = 0;
 			richText.SelectionLength = sTitle.Length; // bold title
 			General.FormatRichText(richText, FontStyle.Bold);
-			richText.SelectionFont = new Font("Georgia", 18);
+			richText.SelectionFont = new Font("Courier New", 18);
 			
 			// undelrine title
 			int nLength = richText.Text.IndexOf(cols[0]);
@@ -125,6 +125,7 @@ namespace Worklog
 		void HandleYearsReportClick (object sender, EventArgs e)
 		{
 			GenericTextForm Report = LayoutDetails.Instance.GetTextFormToUse();
+			Report.GetRichTextBox().Font = new Font("Courier New", 12);
 			//Report.GetRichTextBox().Text = LayoutDetails.Instance.TransactionsList.QueryMonthsInYearReport(2013,01);;
 
 
@@ -134,61 +135,82 @@ namespace Worklog
 			// how to figure out which years available? Another function with an int array of years? Then do a foreach?
 			// int[] nYear = new int[4]  {2006, 2007, 2008, 2009};
 			int[] nYear = LayoutDetails.Instance.TransactionsList.GetWorkHistoryYears();
-			int nSpacing = 20;
-			
-			string sDisplay = Loc.Instance.GetStringFmt("Work History\r\n\r\n{0}\t", General.properspaces(Loc.Instance.GetString ("Year"), nSpacing));
+			int nSpacing = 10;
+			int InteriorSpace = 7;
+			string sDisplay = Loc.Instance.GetStringFmt("Work History\r\n\r\n{0}", General.properspaces(Loc.Instance.GetString ("Year"), nSpacing));
 			
 			foreach (int ny in nYear)
 			{
 				// build header
-				sDisplay = sDisplay + ny.ToString() + "\t";
+				sDisplay = sDisplay + General.properspaces(ny.ToString(),InteriorSpace);
 				
 			}
 			
 			
-			sDisplay = String.Format("{0}\r\n{1}\t", sDisplay, General.properspaces(Loc.Instance.GetString ("Minutes"), nSpacing));
+			sDisplay = String.Format("{0}\r\n{1}", sDisplay, General.properspaces(Loc.Instance.GetString ("Minutes"), nSpacing));
 			// Total Submissions
 			foreach (int ny in nYear)
 			{
 				//hours
-				sDisplay = sDisplay + String.Format("{0}\t", LayoutDetails.Instance.TransactionsList.Query(TransactionsTable.DATA3, ny, "type=5"));
+				string minutes = LayoutDetails.Instance.TransactionsList.Query(TransactionsTable.DATA3, ny, "type=5");
+				if (Constants.BLANK == minutes)
+				{
+					minutes = "0";
+				}
+
+				sDisplay =  sDisplay + General.properspaces(String.Format("{0}", minutes), InteriorSpace);
 			}
 
 			
-			sDisplay = String.Format("{0}\r{1}\t", sDisplay, General.properspaces(Loc.Instance.GetString ("Words"), nSpacing));
-			string sFInished = "\t";
-			string sRetired = "\t";
-			string sAdded = "\t";
-			string sSubmissions = "\t";
+			sDisplay = String.Format("{0}\r{1}", sDisplay, General.properspaces(Loc.Instance.GetString ("Words"), nSpacing));
+			string sFInished ="";// "\t";
+			string sRetired ="";// = "\t";
+			string sAdded ="";// "\t";
+			string sSubmissions ="";//= "\t";
 			
-			string sMaxWordsDay = "\t";
+			string sMaxWordsDay = "";//"\t";
 			
-			string sNags = "\t";
+			string sNags = "";//"\t";
 			
 			// Total Submissions
 			foreach (int ny in nYear)
 			{
-				//hours
-				sDisplay = sDisplay + String.Format("{0}\t", LayoutDetails.Instance.TransactionsList.Query(TransactionsTable.DATA4, ny, "type=5"));
-				sFInished = String.Format("{0}{1}\t", sFInished, LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_FINISHED),false));
-				sRetired = String.Format("{0}{1}\t", sRetired, LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_RETIRED),false));
-				sAdded = String.Format("{0}{1}\t", sAdded, LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_ADDED),false));
-				sSubmissions = String.Format("{0}{1}\t", sSubmissions, LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_SUBMISSION),false));
+				string words= LayoutDetails.Instance.TransactionsList.Query(TransactionsTable.DATA4, ny, "type=5");
+				if (Constants.BLANK == words)
+				{
+					words = "0";
+				}
+
+				sDisplay = sDisplay + General.properspaces(String.Format("{0}", words), InteriorSpace);
+
+				string s = General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_FINISHED),false), InteriorSpace);
+
+				sFInished = String.Format("{0}{1}", sFInished, s);
+
+				s =General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_RETIRED),false), InteriorSpace);
+
+				sRetired = String.Format("{0}{1}", sRetired, s);
+				s = General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_ADDED),false), InteriorSpace);
+				sAdded = String.Format("{0}{1}", sAdded, s);
+				s = General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_SUBMISSION),false), InteriorSpace);
+				sSubmissions = String.Format("{0}{1}", sSubmissions, s);
 				
 				// maxes
-			
-				sMaxWordsDay = String.Format("{0}{1}\t", sMaxWordsDay, LayoutDetails.Instance.TransactionsList.QueryMax(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_USER), false, TransactionsTable.DATA4));
-				sNags = String.Format("{0}{1}\t", sNags, LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_NAGINTERRUPTED),false));
+				s=General.properspaces(LayoutDetails.Instance.TransactionsList.QueryMax(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_USER), false, TransactionsTable.DATA4), InteriorSpace);
+				sMaxWordsDay = String.Format("{0}{1}", sMaxWordsDay, s);
+				s =General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_NAGINTERRUPTED),false), InteriorSpace);
+				sNags = String.Format("{0}{1}", sNags, s);
+
 			}
 			
 			// Part 2 - Finished and Subs
 			sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Finished", nSpacing), sFInished);
-			sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Retired", nSpacing), sRetired);
-			sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Added", nSpacing), sAdded);
-			sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Submissions", nSpacing), sSubmissions);
+			                         sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Retired", nSpacing), sRetired);
+			                         sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Added", nSpacing), sAdded);
+			                         sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Subs", nSpacing),sSubmissions);
 			
-			sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Best Day", nSpacing), sMaxWordsDay);
-			sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Distractions", nSpacing), sNags);
+			                         sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Best Day", nSpacing),sMaxWordsDay);
+			                         sDisplay = String.Format("{0}\r\n{1}{2}", sDisplay, General.properspaces("Nags", nSpacing), sNags);
 			
 			
 			// Part 3 - month breakdown, simple - CURRENT MONTH
