@@ -38,7 +38,16 @@ namespace Worklog
 		{
 
 		}
-
+		public override int defaultHeight {
+			get {
+				return 600;
+			}
+		}
+		public override int defaultWidth {
+			get {
+				return 600;
+			}
+		}
 		
 	public NoteDataXML_Worklog (int height, int width):base(height, width)
 		{
