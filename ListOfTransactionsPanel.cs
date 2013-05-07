@@ -184,8 +184,8 @@ namespace Worklog
 				}
 				else
 				{
-					//TODO: Remove this message
-					NewMessage.Show ("Transaction list for this note was empty. Remove me after debugging.");
+
+					lg.Instance.Line ("ListOfTransactionsPanel.buildList", ProblemType.MESSAGE,"Transaction list for this note was empty. Remove me after debugging.");
 				}
 			} catch (Exception ex) {
 				NewMessage.Show (ex.ToString());

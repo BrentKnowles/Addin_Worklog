@@ -115,7 +115,7 @@ namespace Worklog
 
 
 			Category = new ComboBox ();
-			List<string> allitems = LayoutDetails.Instance.TableLayout.GetListOfStringsFromSystemTable (LayoutDetails.SYSTEM_WORKLOGCATEGORY, 1);
+			List<string> allitems = LayoutDetails.Instance.TableLayout.GetListOfStringsFromSystemTable (NoteDataXML_Worklog.SYSTEM_WORKLOGCATEGORY, 1);
 			//Category.DataSource = allitems;
 			foreach (string s in allitems) {
 				Category.Items.Add (s);
