@@ -46,6 +46,7 @@ namespace Worklog
 		string _GUID=Constants.BLANK;
 		Action<string> RefreshPanels=null;
 		Func<DateTime> CurrentDate=null;
+		Button Add=null;
 		#endregion
 
 		public string SummaryText {
@@ -72,7 +73,7 @@ namespace Worklog
 			EventList.DoubleClick+= HandleTransactionListDoubleClick;
 			EventList.Dock = DockStyle.Fill;
 
-			Button Add = new Button();
+			Add = new Button();
 			Add.Text = Loc.Instance.GetString ("Add Worklog");
 			Add.Dock = DockStyle.Top;
 			Add.Click += HandleAddClick;
@@ -190,6 +191,22 @@ namespace Worklog
 			} catch (Exception ex) {
 				NewMessage.Show (ex.ToString());
 			}
+		}
+		public void UpdateAppearance(AppearanceClass app)
+		{
+			EventList.BackColor = app.mainBackground;
+			EventList.ForeColor =app.secondaryForeground;
+			EventList.Font = app.captionFont;
+
+			Add.BackColor = app.mainBackground;
+			Add.ForeColor = app.secondaryForeground;
+			Add.Font = app.captionFont;
+
+			Summary.Font = app.captionFont;
+			Summary.BackColor = app.mainBackground;
+			Summary.ForeColor = app.secondaryForeground;
+
+
 		}
 	}
 }

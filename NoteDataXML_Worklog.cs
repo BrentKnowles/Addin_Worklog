@@ -34,6 +34,11 @@ namespace Worklog
 {
 	public class NoteDataXML_Worklog: NoteDataXML
 	{
+
+		#region gui
+		JournalPanel Journal = null;
+
+		#endregion
 		public NoteDataXML_Worklog () : base()
 		{
 
@@ -45,7 +50,7 @@ namespace Worklog
 		}
 		public override int defaultWidth {
 			get {
-				return 600;
+				return 700;
 			}
 		}
 		
@@ -110,7 +115,7 @@ namespace Worklog
 			properties.DropDownItems.Add (new ToolStripSeparator ());
 			CaptionLabel.Dock = DockStyle.Top;
 		
-			JournalPanel Journal = new JournalPanel(this.Layout.GUID, BringFrontWrapper);
+			 Journal = new JournalPanel(this.Layout.GUID, BringFrontWrapper);
 			Journal.Dock = DockStyle.Fill;
 			//Journal.Click+= (object sender, EventArgs e) => BringToFrontAndShow();
 
@@ -133,6 +138,14 @@ namespace Worklog
 		public override void Save ()
 		{
 			base.Save ();
+		}
+		protected override AppearanceClass UpdateAppearance ()
+		{
+			AppearanceClass app = base.UpdateAppearance ();
+			if (app != null) {
+				Journal.UpdateAppearance(app);
+			}
+			return app;
 		}
 
 	}

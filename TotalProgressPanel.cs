@@ -55,6 +55,14 @@ namespace Worklog
 		{
 			ProgressPanel.Text = Text;
 		}
+
+		public void UpdateAppearance (Layout.AppearanceClass app)
+		{
+			ProgressPanel.Font = app.captionFont;
+			ProgressPanel.BackColor = app.mainBackground;
+			ProgressPanel.ForeColor =  app.secondaryForeground;
+
+		}
 	}
 }
 

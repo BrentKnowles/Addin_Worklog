@@ -41,6 +41,8 @@ namespace Worklog
 		ListOfTransactionsPanel TransactionsPanel=null;
 		dashboardDayTime dayTime=null;
 		TotalProgressPanel ProgressPanel = null;
+		Button YearsReport = null;
+
 		#endregion
 		#region variables
 		string GUID = Constants.BLANK;
@@ -55,7 +57,8 @@ namespace Worklog
 
 			Panel LeftSide = new Panel();
 			LeftSide.Click+= (object sender, EventArgs e) => BringFront();
-			Button YearsReport = new Button();
+
+			YearsReport = new Button();
 			YearsReport.Text = Loc.Instance.GetString ("Report");
 			YearsReport.Click+= HandleYearsReportClick;
 		//	dashboardDayLog dayLog = new dashboardDayLog();
@@ -275,17 +278,95 @@ namespace Worklog
 			return dayTime.currentDate;
 		}
 
+		// These are specific to a GUID, but still time-limited
+		public  string GetWorkStats_SpecificLayout(DateTime daytouse, string GUID)
+		{
+			//DateTime todaysDate = DateTime.Today();
+			
+			
+			string ExtraFilter =  String.Format("{0}='{1}' and {2}='{3}'", TransactionsTable.TYPE, TransactionsTable.T_USER, TransactionsTable.DATA1_LAYOUTGUID, GUID);
+			
+			string nMinutes =  LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA3, ExtraFilter,false);
+			
+			int minutes = 0;
+			int hours = 0;
+			LayoutDetails.Instance.TransactionsList.GetHoursAndMinutes(nMinutes, out minutes, out hours);
+			nMinutes = Loc.Instance.GetStringFmt("{0} (~{1} hours)", minutes.ToString(), hours.ToString());
+			
+			string Words =  LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA4, ExtraFilter,false);
+			if (Words.IndexOf("null") > -1) Words = "0"; // sometimes they show null compute
+			
+			
+			string ProjectName = MasterOfLayouts.GetNameFromGuid(GUID);
+			
+			string sResult = Loc.Instance.GetStringFmt("WORKLOG - {3} (THIS WEEK){1}Minutes Worked: {0} {1}Words Written: {2}{1}", nMinutes, Environment.NewLine, Words, ProjectName);
+			
+			
+			// Now Get 'All Time Stats' for this layout
+			nMinutes =  LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA3, ExtraFilter, true);
+			LayoutDetails.Instance.TransactionsList.GetHoursAndMinutes(nMinutes, out minutes, out hours);
+			nMinutes = Loc.Instance.GetStringFmt("{0} (~{1} hours)", minutes.ToString(), hours.ToString());
+			Words =  LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA4, ExtraFilter,true);
+			if (Words.IndexOf("null") > -1) Words = "0"; // sometimes they show null compute
+			
+			sResult = String.Format ("{0}{1}{4} (ALL TIME){1}Minutes Worked: {2} {1}Words Written: {3}", sResult, Environment.NewLine, nMinutes, Words, ProjectName);
+			
+			
+			return sResult;
+			
+		}
+		/// <summary>
+		///  get week states for current week
+		/// </summary>
+		/// <param name="daytouse">Will build the week based off of this date</param>
+		/// <returns></returns>
+		public  string GetWeekStats(DateTime daytouse)
+		{
+			//DateTime todaysDate = DateTime.Today();
+			
+			string nMinutes = LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA3, String.Format("{0}='{1}'", TransactionsTable.TYPE,
+			                                                                                                                         TransactionsTable.T_USER),false);
+			
+			int minutes = 0;
+			int hours = 0;
+			LayoutDetails.Instance.TransactionsList.GetHoursAndMinutes(nMinutes, out minutes, out hours);
+			nMinutes = Loc.Instance.GetStringFmt("{0} (~{1} hours)", minutes.ToString(), hours.ToString());
+			
+			string Words = LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA4, String.Format("{0}='{1}'", TransactionsTable.TYPE, 
+			                                                                                                                      TransactionsTable.T_USER),false);
+			if (Words.IndexOf("null") > -1) Words = "0"; // sometimes they show null compute
+			
+			string sResult = Loc.Instance.GetStringFmt("TOTAL WORK THIS WEEK{1}Minutes Worked: {0} {1}Words Written: {2}", nMinutes, Environment.NewLine, Words);
+			return sResult;
+			
+		}
 		public void RefreshPanels (string extra)
 		{
 
 			// extra not used but added because I think I might use it (also needed for delegate)
-			string value = LayoutDetails.Instance.TransactionsList.GetWeekStats(CurrentDate());
+			string value = GetWeekStats(CurrentDate());
 			ProgressPanel.SetProgressPanel(value);
-			TransactionsPanel.SummaryText =  LayoutDetails.Instance.TransactionsList.GetWorkStats_SpecificLayout(CurrentDate(), GUID); //+ " " + CurrentDate ();
+			TransactionsPanel.SummaryText = GetWorkStats_SpecificLayout(CurrentDate(), GUID); //+ " " + CurrentDate ();
 			if (null == TransactionsPanel) {
 				throw new Exception("Journal Panel: Transaction Panel not made yet.");
 			}
 			TransactionsPanel.BuildList();
+		}
+
+		/// <summary>
+		/// Updates the appearance, using the AppearanceClass object
+		/// </summary>
+		/// <param name='app'>
+		/// App.
+		/// </param>
+		public void UpdateAppearance (AppearanceClass app)
+		{
+			YearsReport.BackColor = app.captionBackground;
+			YearsReport.ForeColor = app.captionForeground;
+
+			TransactionsPanel.UpdateAppearance(app);
+			dayTime.UpdateAppearance(app);
+			ProgressPanel.UpdateAppearance(app);
 		}
 	}
 }

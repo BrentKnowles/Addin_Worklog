@@ -160,5 +160,28 @@ namespace Worklog
 
         }
 
+		public void UpdateAppearance (Layout.AppearanceClass app)
+		{
+			this.BackColor = app.mainBackground;
+			this.ForeColor = app.secondaryForeground;
+
+			Font FontToUse = app.captionFont;
+
+
+			panelWithBorder.BackColor = app.mainBackground;
+			panelWithBorder.Font = FontToUse;
+
+			Year.ForeColor = app.secondaryForeground;
+		
+			Month.ForeColor = app.secondaryForeground;
+			Day.ForeColor = app.secondaryForeground;
+			DayOf.ForeColor = app.secondaryForeground;
+
+			Month.Font = app.captionFont;
+			Day.Font = app.captionFont;
+			DayOf.Font = app.captionFont;
+			Year.Font = app.captionFont;
+
+		}
     }
 }
