@@ -112,7 +112,7 @@ namespace MefAddIns
 		//		}
 		public override void RegisterType()
 		{
-			Layout.LayoutDetails.Instance.AddToList(typeof(NoteDataXML_Worklog), "Worklog");
+			Layout.LayoutDetails.Instance.AddToList(typeof(NoteDataXML_Worklog), Name, PlugInBase.AddInFolderName);
 			//NewMessage.Show ("Registering Picture");
 			//Layout.LayoutDetails.Instance.AddToList(typeof(NoteDataXML_Picture.NoteDataXML_Pictures), "Picture");
 		}
