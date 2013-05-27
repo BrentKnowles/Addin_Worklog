@@ -223,7 +223,7 @@ namespace Worklog
 				sRetired = String.Format("{0}{1}", sRetired, s);
 				s = General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_ADDED),false), InteriorSpace);
 				sAdded = String.Format("{0}{1}", sAdded, s);
-				s = General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_SUBMISSION),false), InteriorSpace);
+				s = General.properspaces(LayoutDetails.Instance.TransactionsList.QueryCount(ny, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionSubmission.T_SUBMISSION),false), InteriorSpace);
 				sSubmissions = String.Format("{0}{1}", sSubmissions, s);
 				
 				// maxes
@@ -245,9 +245,9 @@ namespace Worklog
 			
 			
 			// Part 3 - month breakdown, simple - CURRENT MONTH
-			sDisplay = sDisplay + "\r\n\r\nMonthly Breakdown For: " + LayoutDetails.Instance.TransactionsList.QueryMonthsInYearReport(CurrentDate().Year, CurrentDate().Month);
+			sDisplay = sDisplay + "\r\n\r\nMonthly Breakdown For: " + QueryMonthsInYearReport(CurrentDate().Year, CurrentDate().Month);
 			
-			sDisplay = sDisplay + "\r\n\r\nLast Month Breakdown For: " + LayoutDetails.Instance.TransactionsList.QueryMonthsInYearReport(CurrentDate().AddDays(-31).Year, CurrentDate().AddDays(-31).Month);
+			sDisplay = sDisplay + "\r\n\r\nLast Month Breakdown For: " + QueryMonthsInYearReport(CurrentDate().AddDays(-31).Year, CurrentDate().AddDays(-31).Month);
 			
 			
 			Report.GetRichTextBox().Text  = sDisplay;
@@ -266,6 +266,71 @@ namespace Worklog
 
 			Report.ShowDialog();
 
+		}
+		/// <summary>
+		/// returns a month by month breakdown of progress
+		/// 
+		/// will include both Hours, Words, FInished and retired, formatted like
+		/// 
+		///   January 2008
+		///     Minutes: 203  (F_DATA3)
+		///     Words: 1200 (F_DATA4)
+		///     Finished: 0
+		///     Retired: 1
+		///  
+		/// Example usage
+		/// </summary>
+		/// <param name="nYear"></param>
+		/// <returns></returns>
+		public string QueryMonthsInYearReport(int nYear, int nMonth)
+		{
+			//
+			string nMinutes = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA3, nYear, String.Format("{0}='{1}'", TransactionsTable.TYPE, TransactionsTable.T_USER), nMonth,0);
+			string Words = "0";
+			string Added = "0";
+			string AddedSub = "0";
+			string Finished = "0";
+			string Retired = "0";
+			string Nag = "0";
+			string MaxWords = "0";
+			int minutes = 0;
+			int hours = 0;
+			
+			try
+			{
+				minutes = Int32.Parse(nMinutes);
+				hours = (int)(minutes / 60);
+				nMinutes = String.Format("{0} (~{1} hours)", nMinutes, hours.ToString());
+				
+				
+				
+				Words = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA4, nYear, String.Format("{0}='{1}'", TransactionsTable.TYPE, TransactionsTable.T_USER), nMonth,0);
+				Added = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA1_LAYOUTGUID, nYear, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_ADDED), nMonth,0);
+				
+				AddedSub = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA1_LAYOUTGUID, nYear, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionSubmission.T_SUBMISSION), nMonth,0);
+				
+				Finished = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA1_LAYOUTGUID, nYear, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_FINISHED), nMonth,0);
+				
+				Retired = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA1_LAYOUTGUID, nYear, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_RETIRED), nMonth,0);
+				Nag = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA1_LAYOUTGUID, nYear, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_NAGINTERRUPTED), nMonth,0);
+				MaxWords = LayoutDetails.Instance.TransactionsList.QueryMonthInYear(TransactionsTable.DATA4, nYear, String.Format("{0}={1}", TransactionsTable.TYPE, TransactionsTable.T_USER), nMonth, 1);
+			}
+			catch (Exception)
+			{
+				minutes = 0;
+				hours = 0;
+				nMinutes = "0";
+			}
+			
+			
+			DateTime date = new DateTime(nYear, nMonth, 1);
+			
+			
+			string sValue =
+				String.Format("{0}\r\nMinutes: {1} \r\nWords: {2}\r\nFinished: {3}\r\nRetired: {4}\r\nAdded: {5} \r\nSubmissions: {6} \r\nMax Words in One Day: {7} \r\nDistracted: {8}",
+				              date.ToString("MMMM"), nMinutes, Words, Finished, Retired, Added, AddedSub, MaxWords, Nag);
+			return sValue;
+			
 		}
 /// <summary>
 /// Gets the currents Date as set in the dateime control

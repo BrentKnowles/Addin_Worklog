@@ -32,6 +32,7 @@ using CoreUtilities;
 using System.Collections.Generic;
 using Layout;
 using Transactions;
+using System.IO;
 
 namespace Worklog
 {
@@ -89,6 +90,23 @@ namespace Worklog
 			this.Controls.Add (Summary);
 		}
 
+		static void ExportIfNeeded (int minutes)
+		{
+			if (minutes >= 60 && LayoutDetails.Instance.CurrentLayout != null) {
+				// Export Layout if workload was more than 60 minutes
+				string exportDirectory = Path.Combine (LayoutDetails.Instance.Path, "export");
+				exportDirectory = Path.Combine (exportDirectory, "worklog");
+				if (!Directory.Exists (exportDirectory)) {
+					Directory.CreateDirectory (exportDirectory);
+				}
+				string datename = string.Format("{0:yyyy-MM-dd_hh-mm-ss}",
+				                         DateTime.Now);
+				string filename = Path.Combine (exportDirectory, LayoutDetails.Instance.CurrentLayout.GUID + datename + ".xml");
+			//	NewMessage.Show (filename);
+				MasterOfLayouts.ExportLayout (LayoutDetails.Instance.CurrentLayout.GUID, filename);
+			}
+		}
+
 		void HandleTransactionListDoubleClick (object sender, EventArgs e)
 		{
 			// Edit an existing transaction entry
@@ -123,7 +141,7 @@ namespace Worklog
 						LayoutDetails.Instance.TransactionsList.UpdateEvent (foundNote);
 
 							UpdateScreen ();
-
+						ExportIfNeeded (foundNote.Minutes);
 					}
 				} else {
 					NewMessage.Show (Loc.Instance.GetStringFmt ("Unusual Error... unable to retrieve this transaction. ID = {0}", IDOfRowForTransaction));
@@ -150,6 +168,7 @@ namespace Worklog
 				// if in add mode we Add a new entry
 				LayoutDetails.Instance.TransactionsList.AddEvent(new TransactionWorkLog(CurrentDate(), _GUID, 
 				                                                                        AddEdit.Note, AddEdit.Words, AddEdit.Minutes, AddEdit.CategoryText));
+					ExportIfNeeded (AddEdit.Minutes);
 				}
 				else
 				{
