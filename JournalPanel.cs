@@ -375,8 +375,30 @@ namespace Worklog
 			if (Words.IndexOf("null") > -1) Words = "0"; // sometimes they show null compute
 			
 			sResult = String.Format ("{0}{1}{4} (ALL TIME){1}Minutes Worked: {2} {1}Words Written: {3}", sResult, Environment.NewLine, nMinutes, Words, ProjectName);
-			
-			
+
+			// June 2013 - Display a break down of 
+
+			System.Collections.Generic.List<string> allitems = LayoutDetails.Instance.TableLayout.GetListOfStringsFromSystemTable (NoteDataXML_Worklog.SYSTEM_WORKLOGCATEGORY, 1);
+			//Category.DataSource = allitems;
+			string newDetails = "";
+			foreach (string category in allitems) {
+
+				string SpecializedFilter =  String.Format("{0}='{1}' and {2}='{3}' and {4}='{5}'", TransactionsTable.TYPE, TransactionsTable.T_USER, 
+				                                          TransactionsTable.DATA1_LAYOUTGUID, GUID, TransactionsTable.DATA5, category);
+				
+				
+				nMinutes =  LayoutDetails.Instance.TransactionsList.QueryLastWeek(daytouse, TransactionsTable.DATA3, SpecializedFilter, true);
+				LayoutDetails.Instance.TransactionsList.GetHoursAndMinutes(nMinutes, out minutes, out hours);
+				string SpecificMinutes = Loc.Instance.GetStringFmt("{0} minutes (~{1} hours)", minutes.ToString(), hours.ToString());
+				
+				newDetails = String.Format ("{0}{1}{2}: {3}", newDetails, Environment.NewLine, category, SpecificMinutes);
+				
+
+			}
+
+
+
+			sResult = String.Format ("{0}{1}{1}{2}", sResult, Environment.NewLine ,newDetails);
 			return sResult;
 			
 		}

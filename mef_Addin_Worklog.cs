@@ -61,9 +61,10 @@ namespace MefAddIns
 		}
 		public string Version
 		{
+			// 1.2.0.0 Added a break down by category for time reporting
 			// 1.1.0.0 may 2013 - adding dependency for submission system (needed for reports) 
 			// 1.0.1 - creating worklog table on system page here instead of in main application
-			get { return @"1.1.0.0"; }
+			get { return @"1.2.0.0"; }
 		}
 		public string Description
 		{
